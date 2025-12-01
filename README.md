@@ -1,146 +1,119 @@
 cat << 'EOF' > README.md
-# Praktikum #9: Integrasi API Eksternal (Modular)
+# P9-API-INTEGRATION-230104040210: INTEGRASI API EKSTERNAL
 
-Repository ini berisi implementasi Web Service Engineering modul ke-9. Proyek ini mendemonstrasikan cara membangun backend Node.js yang modular untuk mengintegrasikan API eksternal (REST Countries & OpenWeatherMap) dengan fitur caching, logging, dan dokumentasi API.
+**Tech Stack:** Node.js | Express.js | Axios | NodeCache | Morgan | Swagger | Dotenv
 
-## Fitur Utama
-* **Arsitektur Modular**: Pemisahan concern yang jelas (Routes, Controllers, Services, Utils).
-* **Integrasi Pihak Ketiga**:
-    * REST Countries API: Data negara.
-    * OpenWeatherMap API: Data cuaca realtime.
-* **Performance**: Implementasi NodeCache untuk menyimpan respon API sementara (TTL).
-* **Logging**: Menggunakan Morgan untuk mencatat request HTTP.
-* **Dokumentasi**: Swagger UI interaktif untuk pengujian endpoint.
+## Deskripsi Praktikum
 
-## Teknologi yang Digunakan
-* Node.js & Express
-* Axios (HTTP Client)
-* Node-Cache (Caching)
-* Morgan (Logger)
-* Swagger UI Express (API Docs)
-* Dotenv (Environment Variables)
+Repositori ini adalah hasil dari Praktikum #9 Web Service Engineering yang berfokus pada pembangunan API Gateway modular menggunakan Node.js dan Express.
 
-## Struktur Proyek
-Sesuai dengan panduan modul praktikum:
+Tujuan proyek ini adalah untuk mengintegrasikan dan mengelola panggilan ke dua API eksternal: REST Countries dan OpenWeatherMap, dengan menerapkan struktur kode yang terorganisir, caching untuk performa, logging, error handling, dan dokumentasi interaktif Swagger UI.
 
-```text
-P9-API-Integration-230104040210/
-├── src/
-│   ├── controllers/    # Logika penanganan request & response
-│   ├── routes/         # Definisi endpoint
-│   ├── services/       # Business logic & panggilan API eksternal
-│   ├── middleware/     # Error handling & 404
-│   ├── utils/          # Helper (HttpClient, Cache)
-│   └── docs/           # Konfigurasi Swagger/OpenAPI
-├── .env                # Variabel lingkungan (API Key)
-├── server.js           # Entry point aplikasi
-└── package.json
-Cara Menjalankan
-Instalasi Dependensi
+## Tim Developer
 
-Bash
+| Peran | Nama | NIM |
+| :--- | :--- | :--- |
+| Pengembang Proyek | [Nama Anda] | 230104040210 |
+| Dosen Pengampu | Muhayat, M.IT | - |
 
-npm install
-Konfigurasi Environment (.env) Buat file .env dan tambahkan konfigurasi berikut (sesuaikan API Key OpenWeatherMap Anda):
+## Instalasi dan Setup
 
-Cuplikan kode
+### Prasyarat
+* Node.js LTS terpasang.
+* Postman atau browser untuk uji endpoint.
+* Internet aktif (karena memanggil API eksternal).
+* API Key OpenWeatherMap: Diperlukan untuk layanan cuaca (OWM_API_KEY).
 
+## Langkah-langkah Instalasi
+
+### 1. **Inisialisasi Proyek dan Instal Dependensi:**
+
+   ```bash
+   # Masuk ke folder proyek Anda
+   cd P9-API-Integration-230104040210
+
+   # Inisialisasi package.json dan instal dependensi utama
+   npm init -y
+   
+   # express, axios, morgan, node-cache, swagger-ui-express, dotenv
+   npm install express axios morgan node-cache swagger-ui-express dotenv
+   
+   # Instal nodemon sebagai dev dependency untuk auto-restart
+   npm install nodemon --save-dev
+
+```
+### 2. **Konfigurasi Variabel Lingkungan (.env)** : 
+Buat file .env di root proyek dan isikan PORT serta OWM_API_KEY Anda:
+```
 PORT=3000
-OWM_API_KEY=masukkan_api_key_anda_disini
-Jalankan Server
+OWM_API_KEY=API_KEY_ANDA_DARI_OPENWEATHERMAP
+```
+### 3. **Jalankan Server:** Pastikan Anda sudah menambahkan script "dev": "nodemon server.js" di package.json
+```
+npm run dev
+# Atau jika hanya menggunakan npm start:
+# npm start
+```
+### **Fitur Utama**
+Berdasarkan tujuan praktikum, fitur-fitur yang diimplementasikan meliputi:
 
-Bash
+Arsitektur Modular: Pemisahan kode yang ketat menjadi routes, controllers, services, middleware, utils, dan docs.
 
-npm start
-Server akan berjalan di http://localhost:3000.
+API Integration (Countries): Endpoint untuk mengambil semua negara, negara berdasarkan region, dan pencarian berdasarkan nama dari REST Countries.
 
-Dokumentasi & Pengujian Endpoint
-1. Dokumentasi Swagger
-Akses dokumentasi interaktif di browser:
+API Integration (Weather): Endpoint untuk mengambil data cuaca dari OpenWeatherMap menggunakan API Key dari variabel lingkungan (.env).
 
-URL: http://localhost:3000/docs
+Caching: Menggunakan node-cache untuk menyimpan respons API, memastikan panggilan kedua lebih cepat.
 
-2. Endpoint Negara (REST Countries)
-Mengambil data negara (disaring field: name, region, capital, population, flags).
+Global Error Handling: Middleware terpusat untuk menangani error dan mengembalikan respons JSON yang rapi dan konsisten (termasuk error 404/500).
 
-Get All Countries
+Logging: Menggunakan morgan untuk memonitor setiap request yang masuk ke server.
 
-Method: GET
+Dokumentasi API: Menyajikan dokumentasi interaktif di /docs menggunakan Swagger UI.
 
-URL: /api/countries
+```
+Struktur Proyek
+P9-API-Integration-230104040210/
+├── docs/
+│   └── openapi.js           # Spesifikasi OpenAPI/Swagger
+├── src/
+│   ├── controllers/
+│   │   ├── countries.controller.js # Logika Request/Response negara
+│   │   └── weather.controller.js   # Logika Request/Response cuaca
+│   ├── middleware/
+│   │   ├── error.middleware.js     # Global Error Handler (500)
+│   │   └── notfound.middleware.js  # Middleware 404 Not Found
+│   ├── routes/
+│   │   ├── countries.routes.js     # Definisi Endpoint Negara
+│   │   └── weather.routes.js       # Definisi Endpoint Cuaca
+│   ├── services/
+│   │   ├── countries.service.js    # Logic pemanggilan REST Countries (dengan cache)
+│   │   └── weather.service.js      # Logic pemanggilan OpenWeatherMap (dengan cache)
+│   └── utils/
+│       ├── cache.js                # Konfigurasi NodeCache
+│       └── httpClient.js           # Konfigurasi Axios/HTTP Client
+├── .env                     # Variabel lingkungan (OWM_API_KEY, PORT)
+├── package.json
+├── README.md
+└── server.js                # File utama Express App & inisialisasi
+```
+### Panduan Uji Coba Endpoint
+Server berjalan di http://localhost:3000. Pastikan semua endpoint mengembalikan status 200 OK dan data yang benar.
+No.	Deskripsi	Endpoint
+1.	Dokumentasi Swagger UI	http://localhost:3000/docs
+2.	Ambil Semua Negara	http://localhost:3000/api/countries
+3.	Ambil Negara Region Asia	http://localhost:3000/api/countries/region/asia
+4.	Cari Negara Indonesia	http://localhost:3000/api/countries/name/indonesia
+5.	Cuaca Kota (Opsional/Default)	http://localhost:3000/api/weather
+6.	Cuaca Kota Tertentu	http://localhost:3000/api/weather?city=Palangkaraya
 
-Status: 200 OK
+### Checklist Verifikasi
+Struktur modular berjalan (routes / controllers / services terpisah).
 
-Get By Name (Contoh: Indonesia)
+Logging (morgan) tampil di terminal untuk setiap request.
 
-Method: GET
+Caching aktif (respons panggilan kedua lebih cepat).
 
-URL: /api/countries/name/indonesia
+Error handler mengembalikan JSON rapi bila terjadi kegagalan.
 
-Response Output:
-
-JSON
-
-{
-    "name": {
-        "common": "Indonesia",
-        "official": "Republic of Indonesia",
-        "nativeName": {
-            "ind": {
-                "official": "Republik Indonesia",
-                "common": "Indonesia"
-            }
-        }
-    },
-    "capital": ["Jakarta"],
-    "region": "Asia",
-    "population": 284438782
-}
-Get By Region (Contoh: Asia)
-
-Method: GET
-
-URL: /api/countries/region/asia
-
-3. Endpoint Cuaca (OpenWeatherMap)
-Mengambil data cuaca berdasarkan query kota.
-
-Get Weather by City (Contoh: Palangkaraya)
-
-Method: GET
-
-URL: /api/weather?city=Palangkaraya
-
-Response Output:
-
-JSON
-
-{
-    "coord": {
-        "lon": 113.8333,
-        "lat": -2.2
-    },
-    "weather": [
-        {
-            "id": 804,
-            "main": "Clouds",
-            "description": "overcast clouds",
-            "icon": "04d"
-        }
-    ],
-    "base": "stations",
-    "main": {
-        "temp": 30,
-        "feels_like": 34.8,
-        "pressure": 1007
-    }
-}
-Catatan Troubleshooting
-Jika terjadi error 'EADDRINUSE: port 3000', matikan proses yang berjalan di port tersebut:
-
-Bash
-
-# Temukan PID
-netstat -ano | findstr :3000
-# Kill process (Ganti PID sesuai hasil di atas)
-taskkill /PID <PID> /F
+Swagger UI menampilkan dokumentasi endpoint. EOF
